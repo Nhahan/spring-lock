@@ -100,4 +100,3 @@ class PessimisticCounterServiceTest {
         executorService.shutdown();
     }
 }
-

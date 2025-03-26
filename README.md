@@ -93,7 +93,7 @@ src/main/java/org/example/springlock/
 - 여러 서버/인스턴스 간 동시성 제어 가능
 - 분산 환경에서 안정적인 락 제공
 
-## 테스트 코드 분석
+## 테스트 코드
 
 ### 락 없음 테스트 (CounterServiceTest)
 
