@@ -1,6 +1,7 @@
 package org.example.springlock.pessimistic;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,7 @@ class PessimisticCounterServiceTest {
     }
 
     @Test
+    @DisplayName("비관적 락으로 모든 업데이트가 순차적으로 수행된다")
     public void testPessimisticLock() throws InterruptedException {
         int testCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(10);
@@ -68,6 +70,7 @@ class PessimisticCounterServiceTest {
     }
 
     @Test
+    @DisplayName("비관적 락 점유 중에는 후행 요청이 대기하거나 예외가 발생한다")
     public void testLockTimeoutException() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         CountDownLatch latch = new CountDownLatch(2);
@@ -76,7 +79,7 @@ class PessimisticCounterServiceTest {
             try {
                 pessimisticCounterService.lockCounterAndHold(pessimisticCounterId);
             } catch (InterruptedException e) {
-                System.out.println("락 유지 중 예외 발생1: " + e.getMessage());
+                System.out.println("락 유지 중 예외 발생: " + e.getMessage());
             } finally {
                 latch.countDown();
             }
@@ -100,4 +103,3 @@ class PessimisticCounterServiceTest {
         executorService.shutdown();
     }
 }
-

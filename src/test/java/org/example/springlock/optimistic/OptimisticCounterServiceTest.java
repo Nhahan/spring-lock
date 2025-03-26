@@ -1,6 +1,7 @@
 package org.example.springlock.optimistic;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,10 +21,14 @@ class OptimisticCounterServiceTest {
     @Autowired
     private OptimisticCounterService optimisticCounterService;
 
+    @Autowired
+    private OptimisticCounterRepository optimisticCounterRepository;
+
     private Long optimisticCounterId;
 
     @BeforeEach
     public void setup() {
+        optimisticCounterRepository.deleteAll();
         OptimisticCounter optimisticCounter = new OptimisticCounter();
         optimisticCounter.setCount(0);
         OptimisticCounter savedOptimisticCounter = optimisticCounterService.saveCounter(optimisticCounter);
@@ -31,6 +36,7 @@ class OptimisticCounterServiceTest {
     }
 
     @Test
+    @DisplayName("낙관적 락 충돌을 감지하고 예외를 집계한다")
     public void testOptimisticLock() throws InterruptedException {
         int testCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(10);

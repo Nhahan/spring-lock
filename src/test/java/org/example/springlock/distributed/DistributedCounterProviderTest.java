@@ -1,6 +1,7 @@
 package org.example.springlock.distributed;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,10 +24,14 @@ public class DistributedCounterProviderTest {
     @Autowired
     private DistributedCounterService distributedCounterService;
 
+    @Autowired
+    private DistributedCounterRepository distributedCounterRepository;
+
     private Long counterId;
 
     @BeforeEach
     public void setup() {
+        distributedCounterRepository.deleteAll();
         DistributedCounter counter = new DistributedCounter();
         counter.setCount(0);
         distributedCounterProvider.save(counter);
@@ -34,6 +39,7 @@ public class DistributedCounterProviderTest {
     }
 
     @Test
+    @DisplayName("분산 락으로 동시 증가 작업이 정확하게 반영된다")
     public void testDistributedLock() throws InterruptedException {
         int testCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(10);

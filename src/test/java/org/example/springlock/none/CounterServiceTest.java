@@ -1,6 +1,7 @@
 package org.example.springlock.none;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,10 +19,14 @@ class CounterServiceTest {
     @Autowired
     private CounterService counterService;
 
+    @Autowired
+    private CounterRepository counterRepository;
+
     private Long counterId;
 
     @BeforeEach
     public void setup() {
+        counterRepository.deleteAll();
         Counter counter = new Counter();
         counter.setCount(0);
         Counter savedCounter = counterService.saveCounter(counter);
@@ -30,6 +35,7 @@ class CounterServiceTest {
     }
 
     @Test
+    @DisplayName("락 없이 동시에 증가하면 최종 카운트가 줄어든다")
     public void testNoLock() throws InterruptedException {
         int testCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(10);
